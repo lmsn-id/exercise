@@ -106,7 +106,7 @@ pub async fn login(
     let parsed_time = NaiveDateTime::parse_from_str(&form.time, time_format);
 
     let expired_datetime = match parsed_time {
-        Ok(time) => time + Duration::minutes(3),
+        Ok(time) => time + Duration::minutes(30),
         Err(_) => {
             error!("Gagal parsing waktu dari NextAuth.js");
             return HttpResponse::BadRequest().json("Format waktu tidak valid");
@@ -190,7 +190,7 @@ pub async fn refresh_token(
 
     let new_token = generate_random_id(32);
     let expired_datetime = NaiveDateTime::parse_from_str(&form.time, "%d/%m/%Y %H:%M")
-        .unwrap() + Duration::minutes(5); 
+        .unwrap() + Duration::minutes(30); 
     let expired_formatted = expired_datetime.format("%Y-%m-%d %H:%M:%S").to_string();
 
     let insert_result = sqlx::query!(
