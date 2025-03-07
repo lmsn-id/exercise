@@ -1,57 +1,10 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
-import axios, { AxiosError } from "axios";
-import { useRouter } from "next/navigation";
-
-interface FormData {
-  username: string;
-  email: string;
-  password: string;
-}
+import { useRegister } from "~/hook/auth/useAkun";
 
 export default function Register() {
-  const router = useRouter();
-  const { register, handleSubmit } = useForm<FormData>({
-    defaultValues: {
-      username: "",
-      email: "",
-      password: "",
-    },
-  });
-
-  const onSubmit = async (data: FormData) => {
-    try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`,
-        data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        toast.success(response.data.message, {
-          onClose: () => {
-            router.push(response.data.navigate);
-          },
-        });
-      }
-    } catch (error) {
-      const err = error as AxiosError;
-
-      if (err.response) {
-        const errorMessage = (err.response.data as { message: string }).message;
-        toast.error(errorMessage);
-      } else {
-        toast.error("An error occurred");
-      }
-    }
-  };
+  const { register, handleSubmit, onSubmit } = useRegister();
 
   return (
     <>

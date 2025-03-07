@@ -1,81 +1,15 @@
 "use client";
-import { useEffect } from "react";
+import { useLogin } from "~/hook/auth/useAkun";
 import Image from "next/image";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
-import { signIn } from "next-auth/react";
-import { toast } from "react-toastify";
 import { Session } from "next-auth";
-import { useRouter } from "next/navigation";
-import dayjs from "dayjs";
-
-interface FormData {
-  username: string;
-  password: string;
-  remember: boolean;
-}
 
 interface LoginPageProps {
   session: Session | null;
 }
 
 export default function Login({ session }: LoginPageProps) {
-  const { register, handleSubmit } = useForm<FormData>({
-    defaultValues: {
-      username: "",
-      password: "",
-      remember: false,
-    },
-  });
-
-  const router = useRouter();
-
-  useEffect(() => {
-    if (session?.user) {
-      const { message, navigate } = session.user;
-      toast.success(message, {
-        onClose: () => {
-          router.push(navigate);
-        },
-      });
-    }
-  }, [session, router]);
-
-  const onSubmit = async (data: FormData) => {
-    try {
-      if (!data.username || !data.password || !data.remember) {
-        toast.info(
-          ` ${!data.username ? "Username Tidak Boleh Kosong" : ""} ${
-            !data.password ? "Password Tidak Boleh Kosong" : ""
-          } ${!data.remember ? "Tolong Centang Remember" : ""} `
-        );
-        return;
-      }
-
-      const now = dayjs();
-      const localDate = now.format("DD/MM/YYYY");
-      const localTime = now.format("HH:mm");
-
-      const time = `${localDate} ${localTime}`;
-      console.log(time);
-
-      const res = await signIn("credentials", {
-        redirect: false,
-        username: data.username,
-        password: data.password,
-        time,
-      });
-
-      if (res?.ok) {
-        router.refresh();
-      } else {
-        toast.error(res?.error || "Login gagal");
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error("Login Gagal");
-    }
-  };
+  const { register, handleSubmit, onSubmit } = useLogin(session);
   return (
     <>
       <section className="bg-gray-50 dark:bg-gray-900">

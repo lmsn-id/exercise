@@ -1,18 +1,37 @@
 // components/AutoRefreshTokenWrapper.tsx
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "./SessionProvider";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
+import { useIdleTimer } from "react-idle-timer";
 
 export default function AutoRefreshTokenWrapper() {
   const { session } = useSession();
   const router = useRouter();
+  const [isIdle, setIsIdle] = useState(false);
+
+  const handleOnIdle = () => {
+    setIsIdle(true);
+    console.log("User is idle, no token refresh will be performed.");
+  };
+
+  const handleOnActive = () => {
+    setIsIdle(false);
+    console.log("User is active again.");
+  };
+
+  useIdleTimer({
+    timeout: 1 * 60 * 1000,
+    onIdle: handleOnIdle,
+    onActive: handleOnActive,
+    debounce: 500,
+  });
 
   useEffect(() => {
-    if (!session?.user?.token) return;
+    if (!session?.user?.token || isIdle) return;
 
     const currentTime = Date.now();
     const tokenExpirationTime = new Date(
@@ -41,7 +60,6 @@ export default function AutoRefreshTokenWrapper() {
             console.error("Gagal memperbarui token:", result.error);
           } else {
             console.log("Token berhasil diperbarui");
-
             router.refresh();
           }
         } catch (error) {
@@ -57,7 +75,7 @@ export default function AutoRefreshTokenWrapper() {
 
       return () => clearTimeout(timeoutId);
     }
-  }, [session, router]);
+  }, [session, router, isIdle]);
 
   return null;
 }

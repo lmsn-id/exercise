@@ -79,6 +79,14 @@ export const authOptions: AuthOptions = {
         token.message = user.message;
       }
 
+      const currentTime = Date.now();
+      const tokenExpirationTime = new Date(token.expired as string).getTime();
+
+      if (tokenExpirationTime <= currentTime) {
+        token.expiredFlag = true;
+        return {};
+      }
+
       return token;
     },
 
