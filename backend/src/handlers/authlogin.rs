@@ -1,4 +1,4 @@
-use actix_web::{post, delete, web, HttpResponse, Responder};
+use actix_web::{post, delete, web, HttpResponse, Responder, HttpRequest};
 use sqlx::MySqlPool;
 use serde::{Deserialize, Serialize};
 use log::{info, error};
@@ -14,10 +14,6 @@ pub struct LoginRequest {
     pub time: String,
 }
 
-#[derive(Deserialize, Debug)]
-pub struct LogoutRequest {
-    pub access_token: String,
-}
 
 #[derive(Debug, Serialize)]
 pub struct LoginResponse {
@@ -106,7 +102,7 @@ pub async fn login(
     let parsed_time = NaiveDateTime::parse_from_str(&form.time, time_format);
 
     let expired_datetime = match parsed_time {
-        Ok(time) => time + Duration::minutes(30),
+        Ok(time) => time + Duration::minutes(3),
         Err(_) => {
             error!("Gagal parsing waktu dari NextAuth.js");
             return HttpResponse::BadRequest().json("Format waktu tidak valid");
@@ -234,19 +230,23 @@ pub async fn refresh_token(
     })
 }
 
-
 #[delete("/logout")]
 pub async fn logout(
     db: web::Data<MySqlPool>,
-    form: web::Json<LogoutRequest>,
+    req: HttpRequest, 
 ) -> impl Responder {
-    info!("Menerima permintaan Logout: {:?}", form);
+    let access_token = match req.headers().get("Token") {
+        Some(token) => token.to_str().unwrap_or(""),
+        None => return HttpResponse::BadRequest().json("Token tidak ditemukan di header"),
+    };
+
+    info!("Menerima permintaan Logout: {}", access_token);
 
     let delete_result = sqlx::query!(
         r#"
         DELETE FROM accsestoken WHERE token = ?
         "#,
-        form.access_token
+        access_token
     )
     .execute(db.get_ref())
     .await;
@@ -254,10 +254,10 @@ pub async fn logout(
     match delete_result {
         Ok(result) => {
             if result.rows_affected() > 0 {
-                info!("Token berhasil dihapus: {}", form.access_token);
+                info!("Token berhasil dihapus: {}", access_token);
                 HttpResponse::Ok().json("Logout berhasil")
             } else {
-                info!("Token tidak ditemukan: {}", form.access_token);
+                info!("Token tidak ditemukan: {}", access_token);
                 HttpResponse::NotFound().json("Token tidak ditemukan")
             }
         }

@@ -43,7 +43,7 @@ export default function Navbar({ session }: SessionProp) {
         <li>
           <Link
             href="/superadmin"
-            className="block rounded-lg px-4 py-2 text-gray-300 hover:bg-gray-700  md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-yellow-400"
+            className="block rounded-lg px-4 py-2 text-gray-300 hover:bg-gray-700  md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-black"
           >
             Admin
           </Link>
@@ -56,7 +56,7 @@ export default function Navbar({ session }: SessionProp) {
         <li>
           <Link
             href="/e-learning"
-            className="block rounded-lg px-4 py-2 text-gray-300 hover:bg-gray-700  md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-yellow-400"
+            className="block rounded-lg px-4 py-2 text-gray-300 hover:bg-gray-700  md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-black"
           >
             E-Learning
           </Link>
@@ -72,7 +72,7 @@ export default function Navbar({ session }: SessionProp) {
         <li>
           <Link
             href="/akademik"
-            className="block rounded-lg px-4 py-2 text-gray-300 hover:bg-gray-700  md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-yellow-400"
+            className="block rounded-lg px-4 py-2 text-gray-300 hover:bg-gray-700  md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-black"
           >
             Akademik
           </Link>
@@ -119,7 +119,7 @@ export default function Navbar({ session }: SessionProp) {
               width={40}
               height={40}
             />
-            <span className="self-center whitespace-nowrap text-2xl font-bold text-yellow-400">
+            <span className="self-center whitespace-nowrap text-2xl font-bold text-white">
               LMSN
             </span>
           </Link>
@@ -163,7 +163,7 @@ export default function Navbar({ session }: SessionProp) {
               <li>
                 <Link
                   href="/"
-                  className="block rounded-lg bg-blue-700 px-4 py-2 text-white hover:bg-yellow-400 hover:text-gray-900 md:bg-transparent md:p-0 md:hover:bg-transparent md:hover:text-yellow-400"
+                  className="block rounded-lg bg-blue-700 px-4 py-2 text-white hover:bg-purple-400 hover:text-gray-900 md:bg-transparent md:p-0 md:hover:bg-transparent md:hover:text-black"
                 >
                   Home
                 </Link>
@@ -171,7 +171,7 @@ export default function Navbar({ session }: SessionProp) {
               <li>
                 <Link
                   href="/"
-                  className="block rounded-lg px-4 py-2 text-gray-300 hover:bg-gray-700  md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-yellow-400"
+                  className="block rounded-lg px-4 py-2 text-gray-300 hover:bg-gray-700  md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-black"
                 >
                   About
                 </Link>
@@ -179,7 +179,7 @@ export default function Navbar({ session }: SessionProp) {
               <li>
                 <Link
                   href="/"
-                  className="block rounded-lg px-4 py-2 text-gray-300 hover:bg-gray-700  md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-yellow-400"
+                  className="block rounded-lg px-4 py-2 text-gray-300 hover:bg-gray-700  md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-black"
                 >
                   Information
                 </Link>
@@ -189,7 +189,7 @@ export default function Navbar({ session }: SessionProp) {
                   <ComponentPlus />
                   <li>
                     <div className="flex w-full justify-center text-white rounded hover:text-black">
-                      <Logout className="block rounded-lg px-4 py-2 text-gray-300 hover:bg-gray-700  md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-yellow-400" />
+                      <Logout className="block rounded-lg px-4 py-2 text-gray-300 hover:bg-gray-700  md:border-0 md:p-0 md:hover:bg-transparentmd:hover:text-black" />
                     </div>
                   </li>
                 </>
@@ -198,7 +198,6 @@ export default function Navbar({ session }: SessionProp) {
                   <Link
                     href="/auth/login"
                     className="block py-2 px-3 text-white rounded md:hover:text-black"
-                    onClick={() => setIsOpen(false)}
                   >
                     Login
                   </Link>

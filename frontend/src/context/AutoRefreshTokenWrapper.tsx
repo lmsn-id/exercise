@@ -15,12 +15,12 @@ export default function AutoRefreshTokenWrapper() {
 
   const handleOnIdle = () => {
     setIsIdle(true);
-    console.log("User is idle, no token refresh will be performed.");
+    console.log("User is idle");
   };
 
   const handleOnActive = () => {
     setIsIdle(false);
-    console.log("User is active again.");
+    console.log("User is active ");
   };
 
   useIdleTimer({

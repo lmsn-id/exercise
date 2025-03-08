@@ -23,6 +23,12 @@ export const authOptions: AuthOptions = {
                 id: credentials.username,
                 token: credentials.password,
                 time: credentials.time,
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
+                  "Content-Type": "application/json",
+                },
               }
             );
           } else {
@@ -32,6 +38,12 @@ export const authOptions: AuthOptions = {
                 username: credentials?.username,
                 password: credentials?.password,
                 time: credentials?.time,
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
+                  "Content-Type": "application/json",
+                },
               }
             );
           }
@@ -119,7 +131,8 @@ export const authOptions: AuthOptions = {
           {
             data: { access_token: token.token },
             headers: {
-              Authorization: `Bearer ${token.token}`,
+              Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
+              Token: `${token.token}`,
               "Content-Type": "application/json",
             },
           }
