@@ -19,11 +19,10 @@ pub struct LoginRequest {
 pub struct LoginResponse {
     pub id: String,
     pub token: String,
-    pub is_superadmin: String,
     pub role: String,
     pub expired: String, 
-    pub navigate: String,
     pub message: String,
+    pub navigate: String
 }
 
 
@@ -38,7 +37,6 @@ pub struct RefreshTokenRequest {
 pub struct RefreshTokenResponse {
     pub id: String,
     pub token: String,
-    pub is_superadmin: String,
     pub role: String,
     pub expired: String,
 }
@@ -57,8 +55,13 @@ pub async fn login(
 
     let user_result = sqlx::query!(
         r#"
-        SELECT id, password, role, is_superadmin FROM users WHERE username = ?
+        SELECT id, password, 'mahasiswa' AS source, NULL AS role
+        FROM mahasiswa WHERE nis = ?
+        UNION ALL
+        SELECT id, password, 'akademik' AS source, role
+        FROM akademik WHERE username = ?
         "#,
+        form.username,
         form.username
     )
     .fetch_optional(db.get_ref())
@@ -67,7 +70,7 @@ pub async fn login(
     let user = match user_result {
         Ok(Some(user)) => user,
         Ok(None) => {
-            return HttpResponse::Unauthorized().json(BadRequestResponse{
+            return HttpResponse::Unauthorized().json(BadRequestResponse {
                 message: "Akun belum terdaftar".to_string(),
             });
         }
@@ -77,41 +80,31 @@ pub async fn login(
     };
 
     if !verify(&form.password, &user.password).unwrap_or(false) {
-        return HttpResponse::Unauthorized().json(BadRequestResponse{
+        return HttpResponse::Unauthorized().json(BadRequestResponse {
             message: "Password salah".to_string(),
         });
     }
 
-    let delete_result = sqlx::query!(
-        r#"
-        DELETE FROM accsestoken WHERE user_id = ?
-        "#,
-        user.id
-    )
-    .execute(db.get_ref())
-    .await;
-
-    if let Err(e) = delete_result {
+    if let Err(e) = sqlx::query!("DELETE FROM accsestoken WHERE user_id = ?", user.id)
+        .execute(db.get_ref())
+        .await
+    {
         error!("Gagal menghapus token lama: {:?}", e);
         return HttpResponse::InternalServerError().json("Gagal menghapus token lama");
     }
 
     let token = generate_random_id(32);
-
     let time_format = "%d/%m/%Y %H:%M";
-    let parsed_time = NaiveDateTime::parse_from_str(&form.time, time_format);
-
-    let expired_datetime = match parsed_time {
-        Ok(time) => time + Duration::minutes(3),
+    let expired_datetime = match NaiveDateTime::parse_from_str(&form.time, time_format) {
+        Ok(time) => time + Duration::minutes(30),
         Err(_) => {
             error!("Gagal parsing waktu dari NextAuth.js");
             return HttpResponse::BadRequest().json("Format waktu tidak valid");
         }
     };
-
     let expired_formatted = expired_datetime.format("%Y-%m-%d %H:%M:%S").to_string();
 
-    let insert_result = sqlx::query!(
+    if let Err(e) = sqlx::query!(
         r#"
         INSERT INTO accsestoken (id, token, expired, user_id)
         VALUES (?, ?, ?, ?)
@@ -122,30 +115,32 @@ pub async fn login(
         user.id
     )
     .execute(db.get_ref())
-    .await;
-
-    if let Err(e) = insert_result {
+    .await
+    {
         error!("Gagal menyimpan token: {:?}", e);
         return HttpResponse::InternalServerError().json("Gagal menyimpan token");
     }
 
-    let redirect_url = match user.role.as_deref() {
-        Some("superadmin") => "/superadmin",
-        Some("admin") => "/admin",
-        _ => "/", 
+    let navigate = match user.source.as_str() {
+        "akademik" => match user.role.as_deref() {
+            Some("superadmin") => "/superadmin".to_string(),
+            Some("admin") => "/admin".to_string(),
+            Some("dosen") => "/akademik".to_string(),
+            _ => "/".to_string(),
+        },
+        "mahasiswa" => "/siakad".to_string(),
+        _ => "/".to_string(), 
     };
 
     HttpResponse::Ok().json(LoginResponse {
         id: user.id,
         token,
-        is_superadmin: user.is_superadmin.unwrap_or_default(),
         role: user.role.unwrap_or_default(),
         expired: expired_formatted,
-        navigate: redirect_url.to_string(), 
         message: "Login Berhasil".to_string(),
+        navigate, 
     })
 }
-
 
 
 #[post("/refresh-token")]
@@ -170,26 +165,25 @@ pub async fn refresh_token(
         Err(_) => return HttpResponse::Unauthorized().json("Token tidak valid"),
     };
 
-    let delete_result = sqlx::query!(
-        r#"
-        DELETE FROM accsestoken WHERE token = ?
-        "#,
-        form.token
-    )
-    .execute(db.get_ref())
-    .await;
-
-    if let Err(e) = delete_result {
+    if let Err(e) = sqlx::query!("DELETE FROM accsestoken WHERE token = ?", form.token)
+        .execute(db.get_ref())
+        .await
+    {
         error!("Gagal menghapus token lama: {:?}", e);
         return HttpResponse::InternalServerError().json("Gagal menghapus token lama");
     }
 
     let new_token = generate_random_id(32);
-    let expired_datetime = NaiveDateTime::parse_from_str(&form.time, "%d/%m/%Y %H:%M")
-        .unwrap() + Duration::minutes(30); 
+    let expired_datetime = match NaiveDateTime::parse_from_str(&form.time, "%d/%m/%Y %H:%M") {
+        Ok(time) => time + Duration::minutes(30),
+        Err(_) => {
+            error!("Format waktu tidak valid");
+            return HttpResponse::BadRequest().json("Format waktu tidak valid");
+        }
+    };
     let expired_formatted = expired_datetime.format("%Y-%m-%d %H:%M:%S").to_string();
 
-    let insert_result = sqlx::query!(
+    if let Err(e) = sqlx::query!(
         r#"
         INSERT INTO accsestoken (id, token, expired, user_id)
         VALUES (?, ?, ?, ?)
@@ -200,35 +194,40 @@ pub async fn refresh_token(
         token_data.user_id
     )
     .execute(db.get_ref())
-    .await;
-
-    if let Err(e) = insert_result {
+    .await
+    {
         error!("Gagal menyimpan token baru: {:?}", e);
         return HttpResponse::InternalServerError().json("Gagal menyimpan token baru");
     }
 
     let user_result = sqlx::query!(
         r#"
-        SELECT role, is_superadmin FROM users WHERE id = ?
+        SELECT NULL AS role, 'mahasiswa' AS source FROM mahasiswa WHERE id = ?
+        UNION ALL
+        SELECT role, 'akademik' AS source FROM akademik WHERE id = ?
         "#,
+        token_data.user_id,
         token_data.user_id
     )
-    .fetch_one(db.get_ref())
+    .fetch_optional(db.get_ref())
     .await;
 
     let user = match user_result {
-        Ok(user) => user,
-        Err(_) => return HttpResponse::InternalServerError().json("Gagal mengambil data pengguna"),
+        Ok(Some(user)) => user,
+        Ok(None) => return HttpResponse::InternalServerError().json("Gagal mengambil data pengguna"),
+        Err(_) => return HttpResponse::InternalServerError().json("Terjadi kesalahan saat mengambil data pengguna"),
     };
 
     HttpResponse::Ok().json(RefreshTokenResponse {
         id: token_data.user_id,
         token: new_token,
-        is_superadmin: user.is_superadmin.unwrap_or_else(|| "".to_string()),
-        role: user.role.unwrap_or_else(|| "user".to_string()),
+        role: user.role.unwrap_or_else(|| "".to_string()), 
         expired: expired_formatted,
     })
 }
+
+
+
 
 #[delete("/logout")]
 pub async fn logout(

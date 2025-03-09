@@ -48,15 +48,13 @@ export const authOptions: AuthOptions = {
             );
           }
 
-          const { id, token, is_superadmin, role, expired, navigate, message } =
-            res.data;
+          const { id, token, role, expired, navigate, message } = res.data;
 
           console.log("Response Rust:", res.data);
 
           return {
             id,
             token,
-            is_superadmin,
             role,
             expired,
             navigate,
@@ -84,19 +82,10 @@ export const authOptions: AuthOptions = {
       if (user) {
         token.id = user.id;
         token.token = user.token;
-        token.is_superadmin = user.is_superadmin;
         token.role = user.role;
         token.expired = user.expired;
         token.navigate = user.navigate;
         token.message = user.message;
-      }
-
-      const currentTime = Date.now();
-      const tokenExpirationTime = new Date(token.expired as string).getTime();
-
-      if (tokenExpirationTime <= currentTime) {
-        token.expiredFlag = true;
-        return {};
       }
 
       return token;

@@ -29,28 +29,44 @@ pub async fn register_user(
 ) -> impl Responder {
     info!("Menerima permintaan pendaftaran: {:?}", form);
 
-    let existing_username = sqlx::query!("SELECT id FROM users WHERE username = ?", form.username)
-        .fetch_optional(db.get_ref())
-        .await
-        .unwrap();
+    let existing_username = sqlx::query!(
+        r#"
+        SELECT id FROM akademik WHERE username = ?
+        UNION ALL
+        SELECT id FROM mahasiswa WHERE username = ?
+        "#,
+        form.username,
+        form.username 
+    )
+    .fetch_optional(db.get_ref())
+    .await
+    .unwrap();
 
     if existing_username.is_some() {
         return HttpResponse::BadRequest().json(ApiResponse {
             status: "error".to_string(),
-            message: "Username Sudah Terdaftar".to_string(),
+            message: "Username/NIS sudah terdaftar".to_string(),
             navigate: "".to_string(),
         });
     }
 
-    let existing_email = sqlx::query!("SELECT id FROM users WHERE email = ?", form.email)
-        .fetch_optional(db.get_ref())
-        .await
-        .unwrap();
+    let existing_email = sqlx::query!(
+        r#"
+        SELECT id FROM akademik WHERE email = ?
+        UNION ALL
+        SELECT id FROM mahasiswa WHERE email = ?
+        "#,
+        form.email,
+        form.email
+    )
+    .fetch_optional(db.get_ref())
+    .await
+    .unwrap();
 
     if existing_email.is_some() {
         return HttpResponse::BadRequest().json(ApiResponse {
             status: "error".to_string(),
-            message: "Email Sudah Terdaftar".to_string(),
+            message: "Email sudah terdaftar".to_string(),
             navigate: "".to_string(),
         });
     }
@@ -67,7 +83,10 @@ pub async fn register_user(
     };
 
     let result = sqlx::query!(
-        "INSERT INTO users (id, username, email, password) VALUES (?, ?, ?, ?)",
+        r#"
+        INSERT INTO akademik (id, username, email, password) 
+        VALUES (?, ?, ?, ?)
+        "#,
         user_id,
         form.username,
         form.email,
@@ -90,7 +109,7 @@ pub async fn register_user(
             let response = ApiResponse {
                 status: "error".to_string(),
                 message: format!("Failed to register user: {:?}", e),
-                navigate: "".to_string(),
+                navigate: "".to_string()   ,
             };
             info!("Failed to register user: {:?}", e);
             HttpResponse::InternalServerError().json(response)

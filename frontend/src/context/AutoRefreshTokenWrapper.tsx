@@ -1,9 +1,8 @@
-// components/AutoRefreshTokenWrapper.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import { useSession } from "./SessionProvider";
-import { signIn } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
 import { useIdleTimer } from "react-idle-timer";
@@ -20,7 +19,7 @@ export default function AutoRefreshTokenWrapper() {
 
   const handleOnActive = () => {
     setIsIdle(false);
-    console.log("User is active ");
+    console.log("User is active");
   };
 
   useIdleTimer({
@@ -33,12 +32,16 @@ export default function AutoRefreshTokenWrapper() {
   useEffect(() => {
     if (!session?.user?.token || isIdle) return;
 
-    const currentTime = Date.now();
-    const tokenExpirationTime = new Date(
-      session.user.expired as string
-    ).getTime();
+    const currentTime = dayjs();
+    const tokenExpirationTime = dayjs(session.user.expired);
 
-    const timeRemaining = tokenExpirationTime - currentTime;
+    if (tokenExpirationTime.isBefore(currentTime)) {
+      console.warn("Token expired, logging out...");
+      signOut({ callbackUrl: "/auth/login" });
+      return;
+    }
+
+    const timeRemaining = tokenExpirationTime.diff(currentTime, "milliseconds");
 
     if (timeRemaining <= 60000) {
       const refreshToken = async () => {
@@ -58,12 +61,14 @@ export default function AutoRefreshTokenWrapper() {
 
           if (result?.error) {
             console.error("Gagal memperbarui token:", result.error);
+            signOut({ callbackUrl: "/auth/login" });
           } else {
             console.log("Token berhasil diperbarui");
             router.refresh();
           }
         } catch (error) {
           console.error("Gagal memperbarui token:", error);
+          signOut({ callbackUrl: "/auth/login" });
         }
       };
 

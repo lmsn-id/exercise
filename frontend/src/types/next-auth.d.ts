@@ -7,7 +7,6 @@ declare module "next-auth" {
     user: {
       id: string;
       token?: string;
-      is_superadmin?: string;
       expired?: string;
 
       role?: string;
@@ -17,7 +16,6 @@ declare module "next-auth" {
   interface User {
     id: string;
     token: string;
-    is_superadmin: string;
     expired: string;
     role: string;
     navigate: string;

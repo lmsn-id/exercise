@@ -28,11 +28,12 @@ export const useLogin = (session: Session | null) => {
   useEffect(() => {
     if (session?.user) {
       const { message, navigate } = session.user;
-      toast.success(message, {
-        onClose: () => {
-          router.push(navigate);
-        },
-      });
+
+      if (message === "Login Berhasil") {
+        router.push(navigate);
+      } else {
+        toast.error(message);
+      }
     }
   }, [session, router]);
 

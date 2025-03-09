@@ -14,12 +14,7 @@ export default async function AdminPageWrapper({
 }>) {
   const session = await SessionData();
 
-  if (
-    !session ||
-    !session.user.token ||
-    session.user.is_superadmin != "superadmin" ||
-    session.user.role !== "superadmin"
-  ) {
+  if (!session || !session.user.token || session.user.role !== "superadmin") {
     redirect("/404");
   }
 
