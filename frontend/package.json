@@ -11,6 +11,7 @@
     "server": "concurrently \" bun dev\" \"bun server:start\" "
   },
   "dependencies": {
+    "@designbycode/tailwindcss-text-shadow": "^2.2.1",
     "axios": "^1.8.1",
     "concurrently": "^9.1.2",
     "dayjs": "^1.11.13",
@@ -22,6 +23,7 @@
     "react-icons": "^5.5.0",
     "react-idle-timer": "^5.7.2",
     "react-toastify": "^11.0.5",
+    "swiper": "^11.2.5",
     "zustand": "^5.0.3"
   },
   "devDependencies": {

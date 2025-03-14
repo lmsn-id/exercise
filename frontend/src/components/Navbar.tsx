@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useHiddenNavbar } from "~/hook/useTools";
+import Icon from "./Icon";
 import { Session } from "next-auth";
 import Logout from "./Logout";
 
@@ -13,6 +14,7 @@ interface SessionProp {
 
 export default function Navbar({ session }: SessionProp) {
   const [isOpen, setIsOpen] = useState<boolean | null>(null);
+  const [activeIcon, setActiveIcon] = useState<string | null>(null);
 
   const toggleNavbar = () => {
     setIsOpen((prev) => !prev);
@@ -20,12 +22,12 @@ export default function Navbar({ session }: SessionProp) {
 
   const checkScreenSize = () => {
     if (typeof window !== "undefined") {
-      setIsOpen(window.innerWidth >= 768);
+      setIsOpen(window.innerWidth >= 992);
     }
   };
 
   useEffect(() => {
-    setIsOpen(window.innerWidth >= 768);
+    setIsOpen(window.innerWidth >= 992);
     window.addEventListener("resize", checkScreenSize);
 
     return () => {
@@ -84,49 +86,113 @@ export default function Navbar({ session }: SessionProp) {
   };
 
   return (
-    <nav className=" sticky top-0 z-50 border-gray-300 bg-blue-800 text-white md:shadow-lg">
-      <div className="w-full bg-blue-900 p-3">
-        <div className="container mx-auto flex justify-end px-4">
-          <ul className="flex space-x-4">
-            <li>
-              <Link href="/" className="hover:text-yellow-400">
-                Corporate Page
-              </Link>
-            </li>
-            <li>
-              <Link href="/" className="hover:text-yellow-400">
-                Career
-              </Link>
-            </li>
-            <li>
-              <Link href="/" className="hover:text-yellow-400">
-                Contact Us
-              </Link>
-            </li>
-          </ul>
+    <nav className="sticky top-0 z-50 border-gray-300 bg-[#18563F] text-white md:shadow-lg">
+      <div className="w-full bg-[#0d4430] p-3">
+        <div className="container mx-auto flex justify-between px-4 py-2  overflow-hidden">
+          {/* Kontak Icons */}
+          <div className="left">
+            <ul className="flex gap-10 items-center">
+              {[
+                { name: "IoLogoWhatsapp", text: "0812 9633 4496" },
+                { name: "FaPhoneAlt", text: "0812 9633 4496" },
+                { name: "MdEmail", text: "pmb@stmikku.ac.id" },
+              ]
+                .map((item) => ({
+                  ...item,
+                  name: item.name as
+                    | "IoLogoWhatsapp"
+                    | "FaPhoneAlt"
+                    | "MdEmail",
+                }))
+                .map((item) => (
+                  <li key={item.name}>
+                    <button
+                      onClick={() =>
+                        setActiveIcon(
+                          activeIcon === item.name ? null : item.name
+                        )
+                      }
+                      className="flex items-center space-x-3 hover:text-[#A3CD39] transition-colors duration-500"
+                    >
+                      <Icon name={item.name} className="text-lg" />
+
+                      <p
+                        className={`font-semibold ${
+                          activeIcon === item.name
+                            ? "inline opacity-100"
+                            : "hidden"
+                        } md:inline`}
+                      >
+                        {item.text}
+                      </p>
+                    </button>
+                  </li>
+                ))}
+            </ul>
+          </div>
+
+          {/* Bagian Social Media */}
+          <div className="right lg:justify-between lg:items-center space-x-8 lg:flex hidden sm:block">
+            <div className="left">
+              <ul className="flex items-center space-x-5">
+                {[
+                  "FaFacebookF",
+                  "FaInstagram",
+                  "IoLogoGoogleplus",
+                  "FaYoutube",
+                ].map((icon) => (
+                  <li key={icon}>
+                    <Link href="/" className="hover:text-[#A3CD39]">
+                      <Icon
+                        name={
+                          icon as
+                            | "FaFacebookF"
+                            | "FaInstagram"
+                            | "IoLogoGoogleplus"
+                            | "FaYoutube"
+                        }
+                        className="text-xl shrink-0"
+                      />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <span className="hidden lg:block">|</span>
+            <div className="right hidden lg:block">
+              <ul className="flex items-center space-x-4">
+                {["Indonesia", "English"].map((lang) => (
+                  <li key={lang}>
+                    <Link href="/" className="hover:text-[#A3CD39]">
+                      <p className="font-semibold">{lang}</p>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
 
+      {/* Bagian Navigasi */}
       <div className="relative">
-        <div className="mx-auto flex max-w-screen-xl items-center justify-between p-4">
-          <Link
-            href="https://flowbite.com/"
-            className="flex items-center space-x-3"
-          >
+        <div className="container mx-auto flex items-center justify-between py-4 md:p-4 gap-5">
+          <Link href="/" className="flex items-center space-x-3 ">
             <Image
-              src="/image/Logo.webp"
+              src="/image/Logo.png"
               alt="LMSN Logo"
+              className="hidden md:block w-16"
               width={40}
               height={40}
             />
-            <span className="self-center whitespace-nowrap text-2xl font-bold text-white">
-              LMSN
-            </span>
+            <p className="self-center md:text-xl font-bold text-white uppercase w-72 md:w-96 break-words">
+              School Of Technopreneur Nusantara
+            </p>
           </Link>
 
           <button
             type="button"
-            className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-lg p-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            className="lg:hidden inline-flex h-10 w-10 items-center justify-center rounded-lg p-2 mr-5 md:mr-0 text-white hover:bg-[#0d4430] focus:outline-none focus:ring-2 focus:ring-white"
             aria-controls="navbar-default"
             aria-expanded={isOpen ? true : false}
             onClick={toggleNavbar}
@@ -134,62 +200,56 @@ export default function Navbar({ session }: SessionProp) {
             <span className="sr-only">Open main menu</span>
             <div className="space-y-1.5">
               <div
-                className={`h-0.5 w-6 bg-white transition-all duration-300 ease-in-out ${
+                className={`h-0.5 w-6 bg-white transition-all duration-500 ease-in-out ${
                   isOpen ? "rotate-45 translate-y-2" : ""
                 }`}
               ></div>
               <div
-                className={`h-0.5 w-6 bg-white transition-all duration-300 ease-in-out ${
+                className={`h-0.5 w-6 bg-white transition-all duration-500 ease-in-out ${
                   isOpen ? "opacity-0" : ""
                 }`}
               ></div>
               <div
-                className={`h-0.5 w-6 bg-white transition-all duration-300 ease-in-out ${
+                className={`h-0.5 w-6 bg-white transition-all duration-500 ease-in-out ${
                   isOpen ? "-rotate-45 -translate-y-2" : ""
                 }`}
               ></div>
             </div>
           </button>
 
+          {/* Navbar Menu */}
           <div
             id="navbar-default"
-            className={`absolute left-0 top-full z-50 w-full transform bg-blue-700 transition-all duration-500 ease-in-out md:relative md:z-auto md:flex md:w-auto md:items-center md:bg-transparent ${
+            className={`absolute left-0 top-full z-50 w-full transform bg-[#18563F] transition-all duration-500 ease-in-out lg:relative lg:z-auto lg:flex lg:w-auto lg:items-center lg:bg-transparent  ${
               isOpen
                 ? "translate-y-0 opacity-100 pointer-events-auto"
                 : "-translate-y-full opacity-0 pointer-events-none"
             }`}
           >
-            <ul className=" flex flex-col items-center border border-gray-700 bg-blue-700 p-4 font-medium md:mt-0 md:flex-row md:items-center md:space-x-8 md:border-0 md:bg-transparent md:p-0">
-              <li>
-                <Link
-                  href="/"
-                  className="block rounded-lg bg-blue-700 px-4 py-2 text-white hover:bg-purple-400 hover:text-gray-900 md:bg-transparent md:p-0 md:hover:bg-transparent md:hover:text-black"
-                >
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/"
-                  className="block rounded-lg px-4 py-2 text-gray-300 hover:bg-gray-700  md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-black"
-                >
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/"
-                  className="block rounded-lg px-4 py-2 text-gray-300 hover:bg-gray-700  md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-black"
-                >
-                  Information
-                </Link>
-              </li>
+            <ul className="flex flex-col flex-wrap gap-3 justify-center items-center border-t-2 border-white  p-4 font-medium lg:mt-0 lg:flex-row lg:items-center lg:space-x-8 lg:border-0 lg:p-0 lg:text-lg">
+              {[
+                "Home",
+                "About Us",
+                "Admision",
+                "Programme",
+                "Campus Activities",
+                "Contac Us",
+              ].map((menu) => (
+                <li key={menu}>
+                  <Link
+                    href="/"
+                    className="block rounded-lg bg-[#18563F] px-4 py-2 text-white  md:bg-transparent md:p-0 md:hover:bg-transparent hover:text-[#A3CD39] transition-colors duration-500"
+                  >
+                    {menu}
+                  </Link>
+                </li>
+              ))}
               {session ? (
                 <>
                   <ComponentPlus />
                   <li>
-                    <div className="flex w-full justify-center text-white rounded hover:text-black">
-                      <Logout className="block rounded-lg px-4 py-2 text-gray-300 hover:bg-gray-700  md:border-0 md:p-0 md:hover:bg-transparentmd:hover:text-black" />
+                    <div className="flex w-full justify-center text-white rounded hover:text-[#A3CD39] transition-colors duration-500">
+                      <Logout className="block rounded-lg px-4  text-gray-300 hover:bg-gray-700  md:border-0 md:p-0 md:hover:bg-transparentmd:hover:text-black" />
                     </div>
                   </li>
                 </>
@@ -197,7 +257,7 @@ export default function Navbar({ session }: SessionProp) {
                 <li>
                   <Link
                     href="/auth/login"
-                    className="block py-2 px-3 text-white rounded md:hover:text-black"
+                    className="block text-white rounded hover:text-[#A3CD39] transition-colors duration-500"
                   >
                     Login
                   </Link>

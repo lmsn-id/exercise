@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import textShadow from "@designbycode/tailwindcss-text-shadow";
 
 export default {
   content: [
@@ -14,5 +15,12 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    textShadow({
+      shadowColor: "rgba(0, 0, 0, 0.5)",
+      shadowBlur: "3px",
+      shadowOffsetX: "2px",
+      shadowOffsetY: "2px",
+    }),
+  ],
 } satisfies Config;

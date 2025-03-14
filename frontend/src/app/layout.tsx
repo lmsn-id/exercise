@@ -18,10 +18,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Home | Sistem Akademik LMSN",
+  title: "School Of Technoprenuer Nusantara",
   description: "Lazer Multifunction",
   icons: {
-    icon: "/image/Logo.svg",
+    icon: "/image/icon.svg",
   },
 };
 

@@ -10,12 +10,20 @@ import {
   FaRobot,
   FaSearch,
   FaPencilAlt,
+  FaPhoneAlt,
   FaCalendarAlt,
+  FaFacebookF,
+  FaYoutube,
 } from "react-icons/fa";
-import { IoMdChatbubbles, IoIosArrowForward } from "react-icons/io";
+import {
+  IoMdChatbubbles,
+  IoIosArrowForward,
+  IoLogoWhatsapp,
+  IoLogoGoogleplus,
+} from "react-icons/io";
 import { BsClipboard2DataFill } from "react-icons/bs";
 import { PiStudentFill } from "react-icons/pi";
-import { FaBookBookmark } from "react-icons/fa6";
+import { FaBookBookmark, FaInstagram } from "react-icons/fa6";
 import { FiFileText, FiCalendar, FiFolder, FiDatabase } from "react-icons/fi";
 import { TbBrandDatabricks, TbBook, TbReportAnalytics } from "react-icons/tb";
 import {
@@ -24,11 +32,13 @@ import {
   MdNotificationsActive,
   MdOutlineDashboard,
   MdOutlineNotificationsActive,
+  MdEmail,
 } from "react-icons/md";
 import { HiMenuAlt3 } from "react-icons/hi";
 import clsx from "clsx";
 import dynamic from "next/dynamic";
 
+// Objek untuk ikon yang tersedia
 const Icons = {
   FaUser: dynamic(() => Promise.resolve(FaRegUser), { ssr: false }),
   FaTv: dynamic(() => Promise.resolve(FaTv), { ssr: false }),
@@ -63,39 +73,34 @@ const Icons = {
   BsClipboard2DataFill: dynamic(() => Promise.resolve(BsClipboard2DataFill), {
     ssr: false,
   }),
-  TbBook: dynamic(() => Promise.resolve(TbBook), {
-    ssr: false,
-  }),
-  FiCalendar: dynamic(() => Promise.resolve(FiCalendar), {
-    ssr: false,
-  }),
+  TbBook: dynamic(() => Promise.resolve(TbBook), { ssr: false }),
+  FiCalendar: dynamic(() => Promise.resolve(FiCalendar), { ssr: false }),
   TbReportAnalytics: dynamic(() => Promise.resolve(TbReportAnalytics), {
     ssr: false,
   }),
-  FiFolder: dynamic(() => Promise.resolve(FiFolder), {
-    ssr: false,
-  }),
+  FiFolder: dynamic(() => Promise.resolve(FiFolder), { ssr: false }),
   MdOutlineDashboard: dynamic(() => Promise.resolve(MdOutlineDashboard), {
     ssr: false,
   }),
-  FiDatabase: dynamic(() => Promise.resolve(FiDatabase), {
-    ssr: false,
-  }),
+  FiDatabase: dynamic(() => Promise.resolve(FiDatabase), { ssr: false }),
   MdOutlineNotificationsActive: dynamic(
     () => Promise.resolve(MdOutlineNotificationsActive),
-    {
-      ssr: false,
-    }
+    { ssr: false }
   ),
-  FaLock: dynamic(() => Promise.resolve(FaLock), {
+  FaLock: dynamic(() => Promise.resolve(FaLock), { ssr: false }),
+  FaEye: dynamic(() => Promise.resolve(FaEye), { ssr: false }),
+  FaEyeSlash: dynamic(() => Promise.resolve(FaEyeSlash), { ssr: false }),
+  IoLogoWhatsapp: dynamic(() => Promise.resolve(IoLogoWhatsapp), {
     ssr: false,
   }),
-  FaEye: dynamic(() => Promise.resolve(FaEye), {
+  FaPhoneAlt: dynamic(() => Promise.resolve(FaPhoneAlt), { ssr: false }),
+  MdEmail: dynamic(() => Promise.resolve(MdEmail), { ssr: false }),
+  FaFacebookF: dynamic(() => Promise.resolve(FaFacebookF), { ssr: false }),
+  FaInstagram: dynamic(() => Promise.resolve(FaInstagram), { ssr: false }),
+  IoLogoGoogleplus: dynamic(() => Promise.resolve(IoLogoGoogleplus), {
     ssr: false,
   }),
-  FaEyeSlash: dynamic(() => Promise.resolve(FaEyeSlash), {
-    ssr: false,
-  }),
+  FaYoutube: dynamic(() => Promise.resolve(FaYoutube), { ssr: false }),
 };
 
 const Icon = memo(
@@ -127,3 +132,15 @@ const Icon = memo(
 Icon.displayName = "Icon";
 
 export default Icon;
+
+const iconNames = [] as const;
+
+export const IconList = () => {
+  return (
+    <div>
+      {iconNames.map((iconName) => (
+        <Icon key={iconName} name={iconName as keyof typeof Icons} size={24} />
+      ))}
+    </div>
+  );
+};

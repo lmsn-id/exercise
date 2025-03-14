@@ -14,12 +14,12 @@ export default function AutoRefreshTokenWrapper() {
 
   const handleOnIdle = () => {
     setIsIdle(true);
-    console.log("User is idle");
+    console.log("Offline");
   };
 
   const handleOnActive = () => {
     setIsIdle(false);
-    console.log("User is active");
+    console.log("Online");
   };
 
   useIdleTimer({
