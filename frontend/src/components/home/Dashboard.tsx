@@ -12,7 +12,7 @@ export default function DashboardHome() {
     {
       image: "/image/bg1.png",
       title: "School Of Technopreneur Nusantara",
-      subtitle: "Tiada Hari Tanpa Prestasi",
+      subtitle: "Greetings Archipelago",
       description:
         " Lorem, ipsum dolor sit amet consectetur adipisicing elit. Distinctio reprehenderit quo odit quisquam, ab reiciendis corrupti nisi porro ullam! Cum praesentium adipisci reiciendis eveniet voluptatum itaque, cupiditate non laboriosam quibusdam!",
       textPosition: "left",

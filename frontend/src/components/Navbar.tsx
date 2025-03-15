@@ -89,7 +89,6 @@ export default function Navbar({ session }: SessionProp) {
     <nav className="sticky top-0 z-50 border-gray-300 bg-[#18563F] text-white md:shadow-lg">
       <div className="w-full bg-[#0d4430] p-3">
         <div className="container mx-auto flex justify-between px-4 py-2  overflow-hidden">
-          {/* Kontak Icons */}
           <div className="left">
             <ul className="flex gap-10 items-center">
               {[
@@ -131,7 +130,6 @@ export default function Navbar({ session }: SessionProp) {
             </ul>
           </div>
 
-          {/* Bagian Social Media */}
           <div className="right lg:justify-between lg:items-center space-x-8 lg:flex hidden sm:block">
             <div className="left">
               <ul className="flex items-center space-x-5">
@@ -174,7 +172,6 @@ export default function Navbar({ session }: SessionProp) {
         </div>
       </div>
 
-      {/* Bagian Navigasi */}
       <div className="relative">
         <div className="container mx-auto flex items-center justify-between py-4 md:p-4 gap-5">
           <Link href="/" className="flex items-center space-x-3 ">
@@ -217,7 +214,6 @@ export default function Navbar({ session }: SessionProp) {
             </div>
           </button>
 
-          {/* Navbar Menu */}
           <div
             id="navbar-default"
             className={`absolute left-0 top-full z-50 w-full transform bg-[#18563F] transition-all duration-500 ease-in-out lg:relative lg:z-auto lg:flex lg:w-auto lg:items-center lg:bg-transparent  ${

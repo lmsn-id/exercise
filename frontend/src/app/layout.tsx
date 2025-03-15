@@ -41,7 +41,7 @@ export default async function RootLayout({
           <AutoRefreshTokenWrapper />
           <ToastContainer />
           <Navbar session={Session} />
-          <main className="w-full h-full">{children}</main>
+          <main className="w-full h-full bg-gray-100">{children}</main>
         </SessionProvider>
       </body>
     </html>
