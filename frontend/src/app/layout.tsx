@@ -6,6 +6,7 @@ import { SessionData } from "@/auth";
 import Navbar from "~/components/Navbar";
 import "./globals.css";
 import AutoRefreshTokenWrapper from "~/context/AutoRefreshTokenWrapper";
+import { QueryProviders } from "~/context/QueryClient";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,8 +41,10 @@ export default async function RootLayout({
         <SessionProvider session={Session}>
           <AutoRefreshTokenWrapper />
           <ToastContainer />
-          <Navbar session={Session} />
-          <main className="w-full h-full bg-gray-100">{children}</main>
+          <QueryProviders>
+            <Navbar session={Session} />
+            <main className="w-full h-full bg-gray-100">{children}</main>
+          </QueryProviders>
         </SessionProvider>
       </body>
     </html>

@@ -40,12 +40,12 @@ export default function Navbar({ session }: SessionProp) {
   }
 
   const ComponentPlus = () => {
-    if (session?.user?.role === "superadmin") {
+    if (session?.user?.role === "Superadmin") {
       return (
         <li>
           <Link
             href="/superadmin"
-            className="block rounded-lg px-4 py-2 text-gray-300 hover:bg-gray-700  md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-black"
+            className="block rounded-lg bg-[#18563F] px-4 py-2 text-white  md:bg-transparent md:p-0 md:hover:bg-transparent hover:text-[#A3CD39] transition-colors duration-500"
           >
             Admin
           </Link>
@@ -53,14 +53,14 @@ export default function Navbar({ session }: SessionProp) {
       );
     }
 
-    if (session?.user?.role === "siswa") {
+    if (session?.user?.role === "Admin") {
       return (
         <li>
           <Link
-            href="/e-learning"
-            className="block rounded-lg px-4 py-2 text-gray-300 hover:bg-gray-700  md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-black"
+            href="/admin"
+            className="block rounded-lg bg-[#18563F] px-4 py-2 text-white  md:bg-transparent md:p-0 md:hover:bg-transparent hover:text-[#A3CD39] transition-colors duration-500"
           >
-            E-Learning
+            Admin
           </Link>
         </li>
       );
@@ -74,7 +74,7 @@ export default function Navbar({ session }: SessionProp) {
         <li>
           <Link
             href="/akademik"
-            className="block rounded-lg px-4 py-2 text-gray-300 hover:bg-gray-700  md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-black"
+            className="block rounded-lg bg-[#18563F] px-4 py-2 text-white  md:bg-transparent md:p-0 md:hover:bg-transparent hover:text-[#A3CD39] transition-colors duration-500"
           >
             Akademik
           </Link>
@@ -245,7 +245,7 @@ export default function Navbar({ session }: SessionProp) {
                   <ComponentPlus />
                   <li>
                     <div className="flex w-full justify-center text-white rounded hover:text-[#A3CD39] transition-colors duration-500">
-                      <Logout className="block rounded-lg px-4  text-gray-300 hover:bg-gray-700  md:border-0 md:p-0 md:hover:bg-transparentmd:hover:text-black" />
+                      <Logout className="block rounded-lg bg-[#18563F] px-4 py-2 text-white  md:bg-transparent md:p-0 md:hover:bg-transparent hover:text-[#A3CD39] transition-colors duration-500 " />
                     </div>
                   </li>
                 </>

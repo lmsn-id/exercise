@@ -123,9 +123,9 @@ pub async fn login(
 
     let navigate = match user.source.as_str() {
         "akademik" => match user.role.as_deref() {
-            Some("superadmin") => "/superadmin".to_string(),
-            Some("admin") => "/admin".to_string(),
-            Some("dosen") => "/akademik".to_string(),
+            Some("Superadmin") => "/superadmin".to_string(),
+            Some("Admin") => "/admin".to_string(),
+            Some("Dosen") => "/akademik".to_string(),
             _ => "/".to_string(),
         },
         "mahasiswa" => "/siakad".to_string(),
