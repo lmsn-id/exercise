@@ -7,6 +7,7 @@ use crate::routes::middlewares::api_key_validator;
 use crate::handlers::authregister;
 use crate::handlers::authlogin;
 use crate::handlers::authuihome;
+use crate::handlers::authuistatus;
 
 pub fn auth_routes(cfg: &mut web::ServiceConfig) {
     let auth = HttpAuthentication::bearer(api_key_validator);
@@ -19,6 +20,9 @@ pub fn auth_routes(cfg: &mut web::ServiceConfig) {
             .service(authlogin::refresh_token)
             .service(authuihome::post_ui_home_dashboard)
             .service(authuihome::get_ui_home_dashboard)
+            .service(authuihome::get_ui_home_dashboard_by_id)
+            .service(authuihome::update_ui_home_dashboard)
             .service(authuihome::delete_ui_home_dashboard)
+            .service(authuistatus::update_ui_status)
     );
 }

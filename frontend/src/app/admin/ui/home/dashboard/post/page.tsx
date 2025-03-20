@@ -42,12 +42,16 @@ export default function UiHomeDashboardPost() {
   const router = useRouter();
 
   const addDescription = () => {
-    setDescriptions([...descriptions, ""]);
+    const newDescriptions = [...descriptions, ""];
+    setDescriptions(newDescriptions);
+    setValue("descriptions", newDescriptions);
   };
 
   const removeDescription = () => {
     if (descriptions.length > 1) {
-      setDescriptions(descriptions.slice(0, -1));
+      const newDescriptions = descriptions.slice(0, -1);
+      setDescriptions(newDescriptions);
+      setValue("descriptions", newDescriptions);
     }
   };
 
@@ -55,10 +59,12 @@ export default function UiHomeDashboardPost() {
     const newDescriptions = [...descriptions];
     newDescriptions[index] = value;
     setDescriptions(newDescriptions);
+    setValue("descriptions", newDescriptions);
   };
 
   const onSubmit = async (data: FormData) => {
     try {
+      console.log(data);
       const formData = new FormData();
       formData.append("urutan", data.urutan);
       formData.append("title", data.title);
@@ -66,10 +72,7 @@ export default function UiHomeDashboardPost() {
       formData.append("posisi", data.posisi);
       formData.append("page", "Home");
       formData.append("layout", "Dashboard");
-
-      data.descriptions.forEach((desc, index) => {
-        formData.append(`descriptions[${index}]`, desc);
-      });
+      formData.append("descriptions", JSON.stringify(data.descriptions));
 
       if (data.image_file && data.image_file.length > 0) {
         formData.append("image_file", data.image_file[0]);
@@ -91,11 +94,8 @@ export default function UiHomeDashboardPost() {
       );
 
       if (response.status === 200) {
-        toast.success(response.data.message, {
-          onClose: () => {
-            router.push(response.data.navigate);
-          },
-        });
+        toast.success(response.data.message);
+        router.push(response.data.navigate);
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
